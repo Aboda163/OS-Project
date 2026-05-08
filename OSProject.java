@@ -168,11 +168,9 @@ public class OSProject extends JFrame {
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLayout(new BorderLayout());
 
-        // --- TOP PANEL: Controls & Scenarios ---
         JPanel topContainer = new JPanel();
         topContainer.setLayout(new BoxLayout(topContainer, BoxLayout.Y_AXIS));
 
-        // 1. Process Input Setup
         JPanel inputPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 10, 10));
         inputPanel.setBorder(BorderFactory.createTitledBorder("Process Configuration"));
         inputPanel.add(new JLabel("ID:"));
@@ -191,7 +189,6 @@ public class OSProject extends JFrame {
         inputPanel.add(runButton); 
         inputPanel.add(clearButton);
 
-        // 2. Test Scenarios Setup
         JPanel scenariosPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 10, 10));
         scenariosPanel.setBorder(BorderFactory.createTitledBorder("Test Scenarios"));
         JButton btnScenA = new JButton("Scenario A: Basic Mixed");
@@ -208,12 +205,10 @@ public class OSProject extends JFrame {
         topContainer.add(scenariosPanel);
         add(topContainer, BorderLayout.NORTH);
 
-        // --- CENTER PANEL: Unified Results Layout ---
         JPanel centerPanel = new JPanel();
         centerPanel.setLayout(new BoxLayout(centerPanel, BoxLayout.Y_AXIS));
         centerPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
 
-        // 1. Comparison Analysis Table
         String[] compCols = {"Metric", "Priority", "SRTF", "Winner"};
         Object[][] compData = {
             {"Avg Waiting Time (WT)", "", "", ""},
@@ -228,7 +223,6 @@ public class OSProject extends JFrame {
         compScrollPane.setPreferredSize(new Dimension(1200, 120));
         centerPanel.add(compScrollPane);
 
-        // 2. Full Results Tables (Side by Side)
         JPanel tablesPanel = new JPanel(new GridLayout(1, 2, 10, 0));
         
         priorityResultTable = new JTable();
@@ -245,7 +239,6 @@ public class OSProject extends JFrame {
         centerPanel.add(Box.createRigidArea(new Dimension(0, 10)));
         centerPanel.add(tablesPanel);
 
-        // 3. Gantt Charts (Side by Side)
         JPanel ganttContainerPanel = new JPanel(new GridLayout(1, 2, 10, 0));
         
         priorityGanttPanel = new GanttPanel();
@@ -262,14 +255,12 @@ public class OSProject extends JFrame {
 
         add(new JScrollPane(centerPanel), BorderLayout.CENTER);
 
-        // --- BUTTON ACTIONS ---
         addButton.addActionListener(e -> addProcessWithValidation());
 
         clearButton.addActionListener(e -> clearAll());
 
         runButton.addActionListener(e -> runSimulation());
 
-        // Scenario Actions
         btnScenA.addActionListener(e -> {
             clearAll();
             addProcessRaw("p1", 1, 5, 1);
@@ -391,14 +382,11 @@ public class OSProject extends JFrame {
         SimulationResult pRes = simulatePriority(processList);
         SimulationResult sRes = simulateSRTF(processList);
 
-        // Update Full Results Tables
         updateTable(priorityResultTable, pRes);
         updateTable(srtfResultTable, sRes);
 
-        // Update Comparison Table
         updateComparisonTable(pRes, sRes);
 
-        // Update Gantt Charts
         ((GanttPanel)priorityGanttPanel).setGantt(pRes.gantt);
         ((GanttPanel)srtfGanttPanel).setGantt(sRes.gantt);
     }
@@ -413,17 +401,14 @@ public class OSProject extends JFrame {
     }
 
     private void updateComparisonTable(SimulationResult pRes, SimulationResult sRes) {
-        // WT
         comparisonTableModel.setValueAt(String.format("%.2f", pRes.avgWT), 0, 1);
         comparisonTableModel.setValueAt(String.format("%.2f", sRes.avgWT), 0, 2);
         comparisonTableModel.setValueAt(getWinner(pRes.avgWT, sRes.avgWT), 0, 3);
 
-        // TAT
         comparisonTableModel.setValueAt(String.format("%.2f", pRes.avgTAT), 1, 1);
         comparisonTableModel.setValueAt(String.format("%.2f", sRes.avgTAT), 1, 2);
         comparisonTableModel.setValueAt(getWinner(pRes.avgTAT, sRes.avgTAT), 1, 3);
 
-        // RT
         comparisonTableModel.setValueAt(String.format("%.2f", pRes.avgRT), 2, 1);
         comparisonTableModel.setValueAt(String.format("%.2f", sRes.avgRT), 2, 2);
         comparisonTableModel.setValueAt(getWinner(pRes.avgRT, sRes.avgRT), 2, 3);
