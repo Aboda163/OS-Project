@@ -297,7 +297,7 @@ public class OSProject extends JFrame {
             atField.setText("1");
             btField.setText("2");
             priorityField.setText("4");
-            addProcessWithValidation(); // Trigger the error automatically
+            addProcessWithValidation(); 
         });
     }
 
